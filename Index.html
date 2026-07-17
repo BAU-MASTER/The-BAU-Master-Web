@@ -1,323 +1,201 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Lịch Livestream Nội Bộ</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --note-color: #ea580c;
+        }
 
-    <title>RE:BAU</title>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; }
+        
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: var(--primary-color); font-size: 24px; }
 
-    <link rel="stylesheet" href="css/style.css">
+        .container { display: flex; flex-direction: column; gap: 20px; max-width: 1200px; margin: 0 auto; }
 
-    <!-- Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        /* Card Livestream chia làm 2 phần */
+        .live-card {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            min-height: 180px;
+        }
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        /* Vế trái: Background của Brand */
+        .brand-side {
+            flex: 1;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            min-width: 250px;
+        }
+        .brand-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .brand-name {
+            position: relative;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            z-index: 1;
+        }
+
+        /* Vế phải: Chi tiết nội dung */
+        .info-side {
+            flex: 2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #fff;
+        }
+
+        /* Phần Title đi kèm nút Copy */
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .live-title {
+            flex: 1;
+            font-weight: 600;
+            font-size: 16px;
+            word-break: break-all;
+        }
+        .btn-copy {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .btn-copy:hover { background: #1d4ed8; }
+        .btn-copy.copied { background: #10b981; }
+
+        /* Phần Note được làm nổi bật cực mạnh */
+        .note-section {
+            background: #fff7ed;
+            border-left: 4px solid var(--note-color);
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        .note-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--note-color);
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .note-content { color: #7c2d12; font-size: 14px; }
+
+        @media (max-width: 768px) {
+            .live-card { flex-direction: column; }
+            .brand-side { min-height: 120px; }
+        }
+    </style>
 </head>
-
 <body>
 
-    <!-- ================= HEADER ================= -->
-
-    <header class="header">
-
-        <div class="logo-area">
-
-            <img src="assets/logo.png"
-                 alt="Logo"
-                 class="logo">
-
-            <div>
-
-                <h1>RE:BAU MASTER</h1>
-
-                <p id="projectName">
-                    Loading...
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="header-right">
-
-            <span id="currentDate"></span>
-
-            <span class="divider"></span>
-
-            <span id="roomName">Loading...</span>
-
-        </div>
-
-    </header>
-
-    <!-- ================= MAIN ================= -->
-
-    <main class="container">
-
-        <!-- ====== Statistics ====== -->
-
-        <section class="stats">
-
-            <div class="stat-card">
-
-                <div class="stat-number"
-                     id="statTimeline">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    Timeline
-                </div>
-
-            </div>
-
-            <div class="stat-card">
-
-                <div class="stat-number"
-                     id="statAssets">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    Assets
-                </div>
-
-            </div>
-
-            <div class="stat-card">
-
-                <div class="stat-number"
-                     id="statVideos">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    Videos
-                </div>
-
-            </div>
-
-            <div class="stat-card">
-
-                <div class="stat-number"
-                     id="statBackground">
-                    0
-                </div>
-
-                <div class="stat-label">
-                    Backgrounds
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- ====== Content ====== -->
-
-        <section class="content">
-
-            <!-- LEFT -->
-
-            <div class="left-panel">
-
-                <div class="card">
-
-                    <div class="card-header">
-
-                        <h2>
-                            Background Gallery
-                        </h2>
-
-                    </div>
-
-                    <div id="gallery"
-                         class="gallery">
-
-                        <!-- JS Render -->
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- RIGHT -->
-
-            <div class="right-panel">
-
-                <!-- General -->
-
-                <div class="card">
-
-                    <div class="card-header">
-
-                        <h2>
-                            Thông tin chung
-                        </h2>
-
-                    </div>
-
-                    <div class="info-list">
-
-                        <div class="info-row">
-
-                            <label>Brand</label>
-
-                            <span id="brand"></span>
-
-                        </div>
-
-                        <div class="info-row">
-
-                            <label>Campaign</label>
-
-                            <span id="campaign"></span>
-
-                        </div>
-
-                        <div class="info-row">
-
-                            <label>Room</label>
-
-                            <span id="room"></span>
-
-                        </div>
-
-                        <div class="info-row">
-
-                            <label>Agency</label>
-
-                            <span id="agency"></span>
-
-                        </div>
-
-                        <div class="info-row">
-
-                            <label>Producer</label>
-
-                            <span id="producer"></span>
-
-                        </div>
-
-                        <div class="info-row">
-
-                            <label>Status</label>
-
-                            <span id="status"></span>
-
-                        </div>
-
-                        <div class="info-row">
-
-                            <label>Drive</label>
-
-                            <a id="driveLink"
-                               target="_blank">
-                                Open
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- ===== Timeline ===== -->
-
-        <section class="timeline-section">
-
-            <div class="card">
-
-                <div class="card-header">
-
-                    <h2>
-                        Timeline
-                    </h2>
-
-                </div>
-
-                <div class="timeline-wrapper">
-
-                    <table class="timeline-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>Time</th>
-
-                                <th>Content</th>
-
-                                <th>Duration</th>
-
-                                <th>Type</th>
-
-                                <th>Status</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="timelineBody">
-
-                            <!-- Render -->
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-    <!-- ================= LOADING ================= -->
-
-    <div id="loading"
-         class="loading">
-
-        <div class="spinner"></div>
-
-        <p>Loading...</p>
-
+    <div class="header">
+        <h1>LỊCH LIVESTREAM CÁC BRAND</h1>
     </div>
 
-    <!-- ================= IMAGE PREVIEW ================= -->
-
-    <div id="imageModal"
-         class="modal">
-
-        <span id="closeModal"
-              class="close">
-
-            &times;
-
-        </span>
-
-        <img id="modalImage">
-
+    <div class="container" id="live-container">
+        <!-- Dữ liệu từ CSDL sẽ tự động đổ vào đây -->
+        <p style="text-align: center; color: #64748b;">Đang tải lịch livestream...</p>
     </div>
 
-    <!-- ================= TOAST ================= -->
+    <script>
+        // Thay link Google Sheets "Publish to web" của bạn vào đây (giữ đuôi tsv hoặc csv)
+        // Mẹo: Đổi đoạn cuối link của bạn thành /pub?output=csv
+        const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQKP3EkZDPhY7i4EQuVLi3WJqjeiMDxUeUSA8ItYCzof2MR4C_KRvG32E0p_FtcWT2AEVTtnf35yQ2I/pubhtml';
 
-    <div id="toast"
-         class="toast">
+        async function fetchLiveSchedule() {
+            try {
+                const response = await fetch(SHEETS_URL);
+                const data = await response.text();
+                
+                // Parse CSV đơn giản
+                const rows = data.split('\n').slice(1); 
+                const container = document.getElementById('live-container');
+                container.innerHTML = '';
 
-    </div>
+                rows.forEach(row => {
+                    const columns = row.split(','); // Hoặc '\t' nếu dùng tsv
+                    if(columns.length < 4) return;
 
-    <!-- ================= SCRIPT ================= -->
+                    const [brand, bgUrl, title, note] = columns.map(c => c.trim().replace(/^"|"$/g, ''));
 
-    <script type="module" src="js/app.js"></script>
+                    if(!brand) return; // Bỏ qua dòng trống
 
+                    const card = document.createElement('div');
+                    card.className = 'live-card';
+                    card.innerHTML = `
+                        <div class="brand-side" style="background-image: url('${bgUrl || 'https://via.placeholder.com/400x200?text=No+Image'}')">
+                            <div class="brand-overlay"></div>
+                            <div class="brand-name">${brand}</div>
+                        </div>
+                        <div class="info-side">
+                            <div>
+                                <div class="title-section">
+                                    <span class="live-title">${title}</span>
+                                    <button class="btn-copy" onclick="copyTitle(this, '${title.replace(/'/g, "\\'")}')">Copy Title</button>
+                                </div>
+                            </div>
+                            <div class="note-section">
+                                <div class="note-title">📌 Lưu ý quan trọng</div>
+                                <div class="note-content">${note || 'Không có ghi chú nào.'}</div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Lỗi tải dữ liệu:', error);
+                document.getElementById('live-container').innerHTML = '<p style="text-align: center; color: #ef4444;">Không thể tải dữ liệu lịch live. Vui lòng kiểm tra cấu hình CSDL.</p>';
+            }
+        }
+
+        function copyTitle(button, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Đã Copy!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = 'Copy Title';
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('Lỗi khi copy, hãy thử lại!');
+            });
+        }
+
+        // Tự động tải dữ liệu khi vào web
+        fetchLiveSchedule();
+    </script>
 </body>
-
 </html>
